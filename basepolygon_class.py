@@ -57,7 +57,6 @@ place = GoalPolygon(['Бизнес-парк "Ростех-Сити"'])
 n_d, e_one, n_one = place.network_clean(key='drive', num=50)
 a_d, e_two, n_two = place.network_clean(key='walk',num=50)
 all_d, e_three, n_three = place.network_clean(key='all',num=300)
-
 fig, ax = plt.subplots(figsize=(12, 12))
 ax.set_facecolor('black')
 
