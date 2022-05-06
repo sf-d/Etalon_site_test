@@ -9,15 +9,20 @@ class GoalPolygon:
         self.osm_name = osm_name
         self.frame = ox.geocode_to_gdf(self.osm_name)
         self.frameproj = ox.project_gdf(ox.geocode_to_gdf(self.osm_name))
-        self.polygon = self.coordinates_poly()
+        self.polygon = self.poly()
 
-    def coordinates_poly(self):
+    def poly(self):
         coordinates = []
         polygon = self.frameproj.boundary[0]
         # coordinates = list(polygon.coords)
         for i in polygon.coords:
             coordinates.append(list(i))
         return Polygon(coordinates)
+
+    def polygon_coords(self):
+        polygon = self.frameproj.boundary[0]
+        coordinates = list(polygon.coords)
+        return coordinates
 
     def network_clean(self, key='all', num=50):
         network = ox.graph_from_place(self.osm_name, network_type=key, buffer_dist=num)
@@ -45,6 +50,13 @@ class GoalPolygon:
                 nn_coords.append(list(n.coords))
         return nn_coords
 
+    def network_node(self, **kwargs):
+        node_coords = []
+        network, edges, nodes = self.network_clean(**kwargs)
+        for n in nodes.geometry:
+            node_coords.append(list(*n.coords))
+        return node_coords
+
     def get_osmid(self, **kwargs):
         network, edges, nodes = self.network_clean(**kwargs)
         ed_id = list(edges.geometry.keys())
@@ -57,6 +69,8 @@ place = GoalPolygon(['Бизнес-парк "Ростех-Сити"'])
 n_d, e_one, n_one = place.network_clean(key='drive', num=50)
 a_d, e_two, n_two = place.network_clean(key='walk',num=50)
 all_d, e_three, n_three = place.network_clean(key='all',num=300)
+
+
 fig, ax = plt.subplots(figsize=(12, 12))
 ax.set_facecolor('black')
 
