@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
 from basepolygon_class import GoalPolygon
 from models import SimpleDB
-
+import uvicorn
 app = FastAPI()
 
 app_db = SimpleDB()
@@ -37,7 +37,7 @@ app.add_middleware(
 
 @app.get("/")
 async def root():
-    return {"message": "mp geodata app"}
+    return {"message": "masterplan geodata app"}
 
 
 @app.put("/site/{name}")
@@ -101,3 +101,4 @@ async def db_commit(name: str, data: DbCommiter):
 
     app_db.update_data(data_new)
     return data_new
+
