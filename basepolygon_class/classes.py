@@ -53,7 +53,7 @@ class GoalPolygon:
         n_id = list(nodes.geometry.keys())
         return ed_id, n_id
 
-    def network_nodes_cords(self, **kwargs):
+    def get_network_edges_coords(self, **kwargs):
         node_coords = []
         network, edges, nodes = self.network_clean(**kwargs)
         for n in nodes.geometry:
