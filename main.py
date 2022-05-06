@@ -19,6 +19,8 @@ class MpBase(BaseModel):
 class DbCommiter(BaseModel):
     nested_request: dict
 
+class MethodApi(BaseModel):
+    kwargs: dict
 
 origins = ["*"]
 
@@ -30,7 +32,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.add_middleware(HTTPSRedirectMiddleware)
+
 
 
 @app.get("/")
@@ -71,6 +73,21 @@ async def get_site_attr(name, attr):
     gp = app_db.DB[app_db.root]["site"][name]
     return {attr: getattr(gp, attr)}
 
+@app.get("/site/{name}/{method_name}")
+async def get_site_method(name, method_name):
+    global app_db
+    gp = app_db.DB[app_db.root]["site"][name]
+    f=getattr(gp, method_name)
+    ans = f()
+    return {method_name: ans}
+
+@app.post("/site/{name}/{method_name}")
+async def get_site_method(name, method_name, data: MethodApi):
+    global app_db
+    gp = app_db.DB[app_db.root]["site"][name]
+    f=getattr(gp, method_name)
+    ans = f(**data.kwargs)
+    return {method_name: ans}
 
 @app.put("/db/{name}")
 async def db_commit(name: str, data: DbCommiter):

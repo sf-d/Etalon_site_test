@@ -6,10 +6,12 @@ from shapely.geometry import Point, Polygon, LineString, MultiLineString
 
 class GoalPolygon:
     def __init__(self, osm_name):
+        self.name = None
         self.osm_name = osm_name
         self.frame = ox.geocode_to_gdf(self.osm_name)
         self.frameproj = ox.project_gdf(ox.geocode_to_gdf(self.osm_name))
         self.polygon = self.coordinates_poly()
+        self.polygon_coords = self.get_polygon_coords()
 
     def coordinates_poly(self):
         coordinates = []
@@ -33,7 +35,7 @@ class GoalPolygon:
         nodes, edges = ox.graph_to_gdfs(network)
         return network, edges, nodes
 
-    def network_node_coors(self, **kwargs):
+    def network_edges_coords(self, **kwargs):
         nn_coords = []
         network, edges, nodes = self.network_clean(**kwargs)
         for n in edges.geometry:
@@ -50,3 +52,16 @@ class GoalPolygon:
         ed_id = list(edges.geometry.keys())
         n_id = list(nodes.geometry.keys())
         return ed_id, n_id
+
+    def network_nodes_cords(self, **kwargs):
+        node_coords = []
+        network, edges, nodes = self.network_clean(**kwargs)
+        for n in nodes.geometry:
+            node_coords.append(list(*n.coords))
+        return node_coords
+
+    def get_polygon_coords(self):
+        polygon = self.frameproj.boundary[0]
+        coordinates = list(polygon.coords)
+        return coordinates
+
