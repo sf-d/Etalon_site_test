@@ -11,9 +11,11 @@ app = FastAPI()
 app_db = SimpleDB()
 
 
-class MpBase(BaseModel):
-    osm_name: Optional[str]
+class OSMScheme(BaseModel):
+    osm_name: str
+    kwargs: Optional[dict]
     response_keys: Optional[list]
+
 
 
 class DbCommiter(BaseModel):
@@ -41,11 +43,15 @@ async def root():
 
 
 @app.put("/site/{name}")
-async def creat_from_place(name: str, data: MpBase):
+async def creat_from_place(name: str, data: OSMScheme):
     global app_db
-    gp = GoalPolygon(data.osm_name)
-    gp.name = name
+    if data.kwargs:
+        gp = GoalPolygon(data.osm_name, **data.kwargs)
+    else:
 
+
+        gp = GoalPolygon(data.osm_name, **data.kwargs)
+    gp.name = name
     data_new = {
         app_db.root: {
             "site": {
