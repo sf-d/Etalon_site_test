@@ -36,7 +36,6 @@ app.add_middleware(
 
 
 
-
 @app.get("/")
 async def root():
     return {"message": "masterplan geodata app"}
@@ -50,7 +49,7 @@ async def creat_from_place(name: str, data: OSMScheme):
     else:
 
 
-        gp = GoalPolygon(data.osm_name, **data.kwargs)
+        gp = GoalPolygon(data.osm_name)
     gp.name = name
     data_new = {
         app_db.root: {
