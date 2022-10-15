@@ -1,6 +1,6 @@
 from topics.fundamental import *
 from topics.external import *
-
+from fund_hierarch import *
 
 class Архитектура_как_искусство(Поиск_новых_оснований, Сообщество_культура, Медиа_Дигитальное):
     Ольга_Конюкова = 'name'
